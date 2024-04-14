@@ -1,0 +1,8 @@
+Name,Age,Friend
+John,30,Alice
+Alice,25,Gabi
+Marta, 35,Bob
+Bob,35,Marta
+Gabi,20,John
+John,30,Gabi
+Holly,4,John

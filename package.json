@@ -39,5 +39,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/chroma-js": "^2.4.4",
+    "@types/papaparse": "^5.3.14"
   }
 }
