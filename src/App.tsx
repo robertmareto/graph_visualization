@@ -14,7 +14,7 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = '/data/twitter_ondadecalor.csv';
+      const url = '/data/data.csv';
 
       try {
         // Verify if the file exists
@@ -30,45 +30,35 @@ const App = () => {
           header: true,
           delimiter: ",",
           dynamicTyping: true,
-          complete: (results) => {
+          complete: (results) => { 
             const graph = new Graph();
             
             // Builf the graph by creating it's nodes and edges
-            results.data.forEach((line: any) => {
-              const author = line.Username;
-              const isRetweet = line.Retweets >= 1;
-              const retweetedBy = isRetweet ? line['Name'] : null;
+            // results.data.forEach((line: any) => {
+            //   const author = line.Username;
+            //   const isRetweet = line.Retweets >= 1;
+            //   const retweetedBy = isRetweet ? line['Name'] : null;
 
-              if (retweetedBy) {
-                if (!graph.hasNode(author))             graph.addNode(author, { label: author });
-                if (!graph.hasNode(retweetedBy))        graph.addNode(retweetedBy, { label: retweetedBy });
-                if(!graph.hasEdge(retweetedBy, author)) graph.addEdge(retweetedBy, author);
-              }
-            });
+            //   if (retweetedBy) {
+            //     if (!graph.hasNode(author))             graph.addNode(author, { label: author });
+            //     if (!graph.hasNode(retweetedBy))        graph.addNode(retweetedBy, { label: retweetedBy });
+            //     if(!graph.hasEdge(retweetedBy, author)) graph.addEdge(retweetedBy, author);
+            //   }
+            // });
             
             // TESTE 
-            // results.data.forEach((line: any) => {
-            //   const name = line.Name;
-            //   const friend = line.Friend;
-            //   // console.log(`Nome: ${name}, Amigo: ${friend}`);
+            results.data.forEach((line: any) => {
+              const name = line.Name;
+              const friend = line.Friend;
+              // console.log(`Nome: ${name}, Amigo: ${friend}`);
 
-            //   if (!graph.hasNode(name))         graph.addNode(name, { label: name });
-            //   if (!graph.hasNode(friend))       graph.addNode(friend, { label: name });
-            //   if (!graph.hasEdge(name, friend)) graph.addEdge(name, friend);
-            // });
+              if (!graph.hasNode(name))         graph.addNode(name, { label: name });
+              if (!graph.hasNode(friend))       graph.addNode(friend, { label: friend });
+              if (!graph.hasEdge(name, friend)) graph.addEdge(name, friend);
+            });
 
             // Only keep the main connected component
-            // cropToLargestConnectedComponent(graph);
-
-            // Create a color scale with chroma.js to represent the nodes
-            const scale = chroma.scale(['#91DFEB', '#A29CE6']).domain([0, 100]);
-            
-            // Add colors to the nodes, based it's quantity of edges 
-            graph.forEachNode((node) => {
-              const degree = graph.degree(node);
-              const color = scale(degree).hex();
-              graph.setNodeAttribute(node, 'color', color);
-            });
+            cropToLargestConnectedComponent(graph);
 
             // Use degrees for node sizes
             const degrees = graph.nodes().map((node) => graph.degree(node));
@@ -83,6 +73,17 @@ const App = () => {
                 "size",
                 minSize + ((degree - minDegree) / (maxDegree - minDegree)) * (maxSize - minSize),
               );
+            });
+
+            // Create a color scale with chroma.js to represent the nodes
+            const scale = chroma.scale(['#91DFEB', '#A29CE6']).domain([minDegree, maxDegree]);
+            
+            // Add colors to the nodes, based it's quantity of edges 
+            graph.forEachNode((node) => {
+              const degree = graph.degree(node);
+              const color = scale(degree).hex();
+              graph.setNodeAttribute(node, 'color', color);
+              // console.log(`Node ${node} - Degree: ${degree} - Color: ${color}`);
             });
             
             // Position nodes on a circle, then run Force Atlas 2 for a while to get proper graph layout
