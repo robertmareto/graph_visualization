@@ -76,7 +76,7 @@ const App = () => {
             });
 
             // Create a color scale with chroma.js to represent the nodes
-            const scale = chroma.scale(['#91DFEB', '#A29CE6']).domain([minDegree, maxDegree]);
+            const scale = chroma.scale(['#91DFEB', '#A27C10']).domain([minDegree, maxDegree]);
             
             // Add colors to the nodes, based it's quantity of edges 
             graph.forEachNode((node) => {
